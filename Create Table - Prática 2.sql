@@ -1,0 +1,163 @@
+CREATE SEQUENCE idVoto
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  MINVALUE 1
+  NOCYCLE
+  NOCACHE;
+  
+CREATE TABLE Voto (
+  id                    INTEGER NOT NULL,
+  
+  eleitor               VARCHAR2(20),
+  urna                  INTEGER,
+  filiacaoConcorrente   INTEGER,
+  cargoConcorrente      INTEGER,
+  data                  INTEGER,    
+
+  CONSTRAINT PK_VOTO PRIMARY KEY (id),
+  CONSTRAINT SK_VOTO UNIQUE (eleitor, urna, filiacaoConcorrente, cargoConcorrente, data),
+  CONSTRAINT UNIQUE_VOTO UNIQUE (eleitor, data)
+);
+
+
+CREATE SEQUENCE idCargo
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  MINVALUE 1
+  NOCYCLE
+  NOCACHE;
+  
+CREATE TABLE Cargo ( 
+  id      INTEGER,
+  
+  esfera  VARCHAR2(9) NOT NULL,           
+  
+  CONSTRAINT PK_CARGO PRIMARY KEY (id),
+  CONSTRAINT CHECK_ESFERA CHECK (UPPER(esfera) in ('MUNICIPAL','ESTADUAL','FEDERAL'))
+);
+
+CREATE TABLE Municipal (
+  cargo INTEGER,
+  
+  tipo CHAR(8) NOT NULL,
+  
+  CONSTRAINT PK_MUNICIPAL PRIMARY KEY (cargo),
+  CONSTRAINT FK_MUNICIPAL_CARGO FOREIGN KEY (cargo) REFERENCES Cargo(id),
+  CONSTRAINT CHECK_TIPO_MUNICIPAL CHECK(UPPER(tipo) in ('VEREADOR', 'PREFEITO'))
+);
+
+CREATE TABLE Estadual (
+  cargo INTEGER,
+  
+  tipo VARCHAR2(17) NOT NULL, /* VARCHAR(17) pois o tam. máximo == DEPUTADO ESTADUAL que tem 17 caracteres */
+  
+  CONSTRAINT PK_ESTADUAL PRIMARY KEY (cargo),
+  CONSTRAINT FK_ESTADUAL_CARGO FOREIGN KEY (cargo) REFERENCES Cargo(id),
+  CONSTRAINT CHECK_TIPO_ESTADUAL CHECK(UPPER(tipo) in ('DEPUTADO ESTADUAL', 'GOVERNADOR'))
+);
+
+CREATE TABLE Federal (
+  cargo INTEGER,
+  
+  tipo VARCHAR2(16) NOT NULL,
+  
+  CONSTRAINT PK_FEDERAL PRIMARY KEY (cargo),
+  CONSTRAINT FK_FEDERAL_CARGO FOREIGN KEY (cargo) REFERENCES Cargo(id),
+  CONSTRAINT CHECK_TIPO_FEDERAL CHECK(UPPER(tipo) in ('DEPUTADO FEDERAL', 'SENADOR', 'PRESIDENTE'))
+);
+
+CREATE TABLE Vereador (
+  cargo       INTEGER,
+  
+  nome        CHAR(8) NOT NULL,
+  numCadeira  INTEGER NOT NULL,
+  anosMandato INTEGER NOT NULL,
+  anoBase     INTEGER,
+  
+  CONSTRAINT PK_VEREADOR PRIMARY KEY (cargo),
+  CONSTRAINT SK_VEREADOR UNIQUE (nome, numCadeira),
+  CONSTRAINT FK_VEREADOR_MUNICIPAL FOREIGN KEY (cargo) REFERENCES Municipal(id)  
+);
+
+CREATE TABLE Prefeito (
+  cargo       INTEGER,
+  
+  nome        CHAR(8) NOT NULL,
+  numCadeira  INTEGER NOT NULL,
+  anosMandato INTEGER NOT NULL,
+  anoBase     INTEGER,
+  vice        BOOLEAN NOT NULL,
+  
+  CONSTRAINT PK_PREFEITO PRIMARY KEY (cargo),
+  CONSTRAINT SK_PREFEITO UNIQUE (nome, numCadeira),
+  CONSTRAINT FK_PREFEITO_MUNICIPAL FOREIGN KEY (cargo) REFERENCES Municipal(id)  
+);
+
+CREATE TABLE DeputadoEstadual (
+  cargo       INTEGER,
+  
+  nome        CHAR(17) NOT NULL,
+  numCadeira  INTEGER NOT NULL,
+  anosMandato INTEGER NOT NULL,
+  anoBase     INTEGER,
+  
+  CONSTRAINT PK_DEPUTADO_ESTADUAL PRIMARY KEY (cargo),
+  CONSTRAINT SK_DEPUTADO_ESTADUAL UNIQUE (nome, numCadeira),
+  CONSTRAINT FK_DEPUTADO_ESTADUAL_ESTADUAL FOREIGN KEY (cargo) REFERENCES Estadual(id)  
+);
+
+CREATE TABLE Governador (
+  cargo       INTEGER,
+  
+  nome        CHAR(10) NOT NULL,
+  numCadeira  INTEGER NOT NULL,
+  anosMandato INTEGER NOT NULL,
+  anoBase     INTEGER,
+  vice        BOOLEAN NOT NULL,
+  
+  CONSTRAINT PK_GOVERNADOR PRIMARY KEY (cargo),
+  CONSTRAINT SK_GOVERNADOR UNIQUE (nome, numCadeira),
+  CONSTRAINT FK_GOVERNADOR_ESTADUAL FOREIGN KEY (cargo) REFERENCES Estadual(id)  
+);
+
+CREATE TABLE DeputadoFederal (
+  cargo       INTEGER,
+  
+  nome        CHAR(16) NOT NULL,
+  numCadeira  INTEGER NOT NULL,
+  anosMandato INTEGER NOT NULL,
+  anoBase     INTEGER,
+  
+  CONSTRAINT PK_DEPUTADO_FEDERAL PRIMARY KEY (cargo),
+  CONSTRAINT SK_DEPUTADO_FEDERAL UNIQUE (nome, numCadeira),
+  CONSTRAINT FK_DEPUTADO_FEDERAL_FEDERAL FOREIGN KEY (cargo) REFERENCES Federal(id)  
+);
+
+CREATE TABLE Senador (
+  cargo       INTEGER,
+  
+  nome        CHAR(7) NOT NULL,
+  numCadeira  INTEGER NOT NULL,
+  anosMandato INTEGER NOT NULL,
+  anoBase     INTEGER,
+  
+  CONSTRAINT PK_SENADOR PRIMARY KEY (cargo),
+  CONSTRAINT SK_SENADOR UNIQUE (nome, numCadeira),
+  CONSTRAINT FK_SENADOR_FEDERAL FOREIGN KEY (cargo) REFERENCES Federal(id)  
+);
+
+CREATE TABLE Presidente (
+  cargo       INTEGER,
+  
+  nome        CHAR(7) NOT NULL,
+  numCadeira  INTEGER NOT NULL,
+  anosMandato INTEGER NOT NULL,
+  anoBase     INTEGER,
+  vice        BOOLEAN NOT NULL,
+  
+  CONSTRAINT PK_PRESIDENTE PRIMARY KEY (cargo),
+  CONSTRAINT SK_PRESIDENTE UNIQUE (nome, numCadeira),
+  CONSTRAINT FK_PRESIDENTE_FEDERAL FOREIGN KEY (cargo) REFERENCES Federal(id)  
+);
