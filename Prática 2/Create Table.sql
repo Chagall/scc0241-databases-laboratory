@@ -1,3 +1,91 @@
+/* --------------- Sequencias Utilizadas pelas Tabelas --------------- */
+
+/*
+Faz: Sequência que gera os números identificadores (ids) 
+para a tabela ZonaEleitoral
+*/
+CREATE SEQUENCE numeroZonaEleitoral
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  MINVALUE 1
+  NOCYCLE
+  NOCACHE;
+
+/*
+Faz: Sequência que gera os números identificadores (ids) 
+para a tabela SessaoEleitoral
+*/
+CREATE SEQUENCE idSessaoEleitoral
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  MINVALUE 1
+  NOCYCLE
+  NOCACHE;
+
+/*
+Faz: Sequência que gera os números identificadores (ids) 
+para a tabela Urna
+*/
+CREATE SEQUENCE codigoUrna
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  MINVALUE 1
+  NOCYCLE
+  NOCACHE;
+  
+/*
+Faz: Sequência que gera os números identificadores (ids) 
+para a tabela Filiacao
+*/
+CREATE SEQUENCE idFiliacao
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  MINVALUE 1
+  NOCYCLE
+  NOCACHE;
+  
+/*
+Faz: Sequência que gera os números identificadores (ids) 
+para a tabela IntencaoVoto
+*/
+CREATE SEQUENCE idIntencaoVoto
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  MINVALUE 1
+  NOCYCLE
+  NOCACHE;
+  
+/*
+  Sequence: ID Voto
+  Faz: Sequencia que gera os numeros identificadores (ids) para a tabela Voto
+*/
+CREATE SEQUENCE idVoto
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  MINVALUE 1
+  NOCYCLE
+  NOCACHE;
+
+/*
+  Sequence: ID Cargo
+  Faz: Sequencia que gera os numeros identificadores (ids) para a tabela Cargo
+*/
+CREATE SEQUENCE idCargo
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  MINVALUE 1
+  NOCYCLE
+  NOCACHE;
+
+/* ----------------------- Tabelas ----------------------- */  
+
 /*
 Cria a tabela de Cidades
 - nome: nome da cidade
@@ -27,18 +115,6 @@ CREATE TABLE Bairro (
 );
 
 /*
-Faz: Sequência que gera os números identificadores (ids) 
-para a tabela ZonaEleitoral
-*/
-CREATE SEQUENCE numeroZonaEleitoral
-  START WITH 1
-  INCREMENT BY 1
-  NOMAXVALUE
-  MINVALUE 1
-  NOCYCLE
-  NOCACHE;
-
-/*
 Cria a tabela de Zona Eleitoral
 - numero: numero identificador da zona
 - tamanho: numero de votantes na zona
@@ -49,18 +125,6 @@ CREATE TABLE ZonaEleitoral (
   
   CONSTRAINT PK_ZonaEleitoral PRIMARY KEY (numero)
 );
-
-/*
-Faz: Sequência que gera os números identificadores (ids) 
-para a tabela SessaoEleitoral
-*/
-CREATE SEQUENCE idSessaoEleitoral
-  START WITH 1
-  INCREMENT BY 1
-  NOMAXVALUE
-  MINVALUE 1
-  NOCYCLE
-  NOCACHE;
 
 /*
 Cria a tabela de Sessao Eleitoral
@@ -81,21 +145,10 @@ CREATE TABLE SessaoEleitoral (
   
   CONSTRAINT PK_SessaoEleitoral PRIMARY KEY (id),
   CONSTRAINT UQ_SessaoEleitoral UNIQUE (numero, zona, bairro, cidade, estado),
+  CONSTRAINT FK_SessaoEleitoral FOREIGN KEY (bairro, cidade, estado) REFERENCES Bairro(nome, cidade, estado),
   CONSTRAINT FK_SessaoEl_ZonaEl FOREIGN KEY (zona)
     REFERENCES ZonaEleitoral (numero) ON DELETE SET NULL
 );
-
-/*
-Faz: Sequência que gera os números identificadores (ids) 
-para a tabela Urna
-*/
-CREATE SEQUENCE codigoUrna
-  START WITH 1
-  INCREMENT BY 1
-  NOMAXVALUE
-  MINVALUE 1
-  NOCYCLE
-  NOCACHE;
 
 /*
 Cria a tabela de Urna
@@ -200,18 +253,6 @@ CREATE TABLE PartidoPolitico (
 );
 
 /*
-Faz: Sequência que gera os números identificadores (ids) 
-para a tabela Filiacao
-*/
-CREATE SEQUENCE idFiliacao
-  START WITH 1
-  INCREMENT BY 1
-  NOMAXVALUE
-  MINVALUE 1
-  NOCYCLE
-  NOCACHE;
-
-/*
 Cria a tabela de Filiacao
 - id: identificador da filiacao
 - numeroFiliacao: numero da filiacao
@@ -233,6 +274,20 @@ CREATE TABLE Filiacao (
 );
 
 /*
+  Table: Cargo
+  O que armazena: O numero identificador do cargo e a esfera a qual ele pertence
+  As possiveis esferas sao: Municipal, Estadual e Federal
+*/  
+CREATE TABLE Cargo ( 
+  id      INTEGER NOT NULL,
+  
+  esfera  VARCHAR2(9) NOT NULL, /* Contem 9 caracteres pois a maior palavra armazenada e 'Municipal' */       
+  
+  CONSTRAINT PK_CARGO PRIMARY KEY (id),
+  CONSTRAINT CHECK_ESFERA CHECK (UPPER(esfera) in ('MUNICIPAL','ESTADUAL','FEDERAL'))
+);
+
+/*
 Cria a tabela de Concorrente
 - filiacao: numero identificador da filiacao do Concorrente
 - idCargo: id do cargo do Concorrente
@@ -247,70 +302,6 @@ CREATE TABLE Concorrente (
   CONSTRAINT FK_Concorrente_Cargo FOREIGN KEY (idCargo)
     REFERENCES Cargo(id)
 );
-
-/*
-Faz: Sequência que gera os números identificadores (ids) 
-para a tabela IntencaoVoto
-*/
-CREATE SEQUENCE idIntencaoVoto
-  START WITH 1
-  INCREMENT BY 1
-  NOMAXVALUE
-  MINVALUE 1
-  NOCYCLE
-  NOCACHE;
-
-/*
-Cria a tabela de IntencaoVoto
-- id: numero identificador da intencao de voto
-- eleitor: eleitor da intencao de voto
-- filiacaoConcorrente: filiacao concorrente da intencao de voto
-- cargoConcorrente: cargo concorrente da intencao de voto
-- data: data da intencao de voto
-*/
-CREATE TABLE IntencaoVoto (
-  id INTEGER NOT NULL,
-  eleitor VARCHAR2(11),
-  filiacaoConcorrente INTEGER,
-  cargoConcorrente INTEGER,
-  data DATE NOT NULL,
-  
-  CONSTRAINT PK_IntencaoVoto PRIMARY KEY (id),
-  CONSTRAINT UQ_IntencaoVoto UNIQUE (eleitor, filiacaoConcorrente,
-                                     cargoConcorrente),
-  CONSTRAINT UQ_IntencaoVoto1 UNIQUE (eleitor, data),
-  CONSTRAINT FK_IntencaoVoto_Concorrente FOREIGN KEY (filiacaoConcorrente,
-                                                      cargoConcorrente)
-    REFERENCES Concorrente(filiacao, idCargo)
-);
-
-/* ----- Sequencias Utilizadas pelas Tabelas ----- */
-
-/*
-  Sequence: ID Voto
-  Faz: Sequencia que gera os numeros identificadores (ids) para a tabela Voto
-*/
-CREATE SEQUENCE idVoto
-  START WITH 1
-  INCREMENT BY 1
-  NOMAXVALUE
-  MINVALUE 1
-  NOCYCLE
-  NOCACHE;
-
-/*
-  Sequence: ID Cargo
-  Faz: Sequencia que gera os numeros identificadores (ids) para a tabela Cargo
-*/
-CREATE SEQUENCE idCargo
-  START WITH 1
-  INCREMENT BY 1
-  NOMAXVALUE
-  MINVALUE 1
-  NOCYCLE
-  NOCACHE;
-  
-/* ----- Tabelas ----- */  
 
 /*
   Table: Voto
@@ -335,17 +326,27 @@ CREATE TABLE Voto (
 );
 
 /*
-  Table: Cargo
-  O que armazena: O numero identificador do cargo e a esfera a qual ele pertence
-  As possiveis esferas sao: Municipal, Estadual e Federal
-*/  
-CREATE TABLE Cargo ( 
-  id      INTEGER NOT NULL,
+Cria a tabela de IntencaoVoto
+- id: numero identificador da intencao de voto
+- eleitor: eleitor da intencao de voto
+- filiacaoConcorrente: filiacao concorrente da intencao de voto
+- cargoConcorrente: cargo concorrente da intencao de voto
+- data: data da intencao de voto
+*/
+CREATE TABLE IntencaoVoto (
+  id INTEGER NOT NULL,
+  eleitor VARCHAR2(11),
+  filiacaoConcorrente INTEGER,
+  cargoConcorrente INTEGER,
+  data DATE NOT NULL,
   
-  esfera  VARCHAR2(9) NOT NULL, /* Contem 9 caracteres pois a maior palavra armazenada e 'Municipal' */       
-  
-  CONSTRAINT PK_CARGO PRIMARY KEY (id),
-  CONSTRAINT CHECK_ESFERA CHECK (UPPER(esfera) in ('MUNICIPAL','ESTADUAL','FEDERAL'))
+  CONSTRAINT PK_IntencaoVoto PRIMARY KEY (id),
+  CONSTRAINT UQ_IntencaoVoto UNIQUE (eleitor, filiacaoConcorrente,
+                                     cargoConcorrente),
+  CONSTRAINT UQ_IntencaoVoto1 UNIQUE (eleitor, data),
+  CONSTRAINT FK_IntencaoVoto_Concorrente FOREIGN KEY (filiacaoConcorrente,
+                                                      cargoConcorrente)
+    REFERENCES Concorrente(filiacao, idCargo)
 );
 
 /*
