@@ -26,17 +26,23 @@ CREATE TABLE Bairro (
     REFERENCES Cidade (nome, estado) ON DELETE CASCADE
 );
 
+/*
+Cria a tabela de Zona Eleitoral
+- numero: numero identificador da zona
+- tamanho: numero de votantes na zona
+*/
 CREATE TABLE ZonaEleitoral (
-  numero NUMBER NOT NULL,
+  numero INTEGER NOT NULL,
   tamanho INTEGER NOT NULL,
   
-  CONSTRAINT FK_ZonaEleitoral PRIMARY KEY (numero)
+  CONSTRAINT PK_ZonaEleitoral PRIMARY KEY (numero)
 );
 
+
 CREATE TABLE SessaoEleitoral (
-  id NUMBER NOT NULL,
-  numero NUMBER,
-  zona NUMBER,
+  id INTEGER NOT NULL,
+  numero INTEGER,
+  zona INTEGER,
   bairro VARCHAR(30),
   cidade VARCHAR(30),
   estado CHAR(2),
@@ -48,11 +54,11 @@ CREATE TABLE SessaoEleitoral (
 );
 
 CREATE TABLE Urna (
-  codigo NUMBER NOT NULL,
+  codigo INTEGER NOT NULL,
   fabricante VARCHAR(20) NOT NULL,
-  numRegistro NUMBER NOT NULL,
-  zona NUMBER NOT NULL,
-  sessao NUMBER NOT NULL,
+  numRegistro INTEGER NOT NULL,
+  zona INTEGER NOT NULL,
+  sessao INTEGER NOT NULL,
   
   CONSTRAINT PK_Urna PRIMARY KEY (codigo),
   CONSTRAINT FK_Urna_Zona FOREIGN KEY (zona) 
@@ -74,7 +80,7 @@ CREATE TABLE Eleitor (
 
 CREATE TABLE VotoBrancoNulo (
   eleitor VARCHAR(11) NOT NULL,
-  urna NUMBER NOT NULL, 
+  urna INTEGER NOT NULL, 
   data DATE NOT NULL,
   isBranco CHAR(1),
   isNulo CHAR(1),
@@ -86,6 +92,69 @@ CREATE TABLE VotoBrancoNulo (
     REFERENCES Urna (codigo)
 );
 
+CREATE TABLE Candidato (
+  CPF VARCHAR(11) NOT NULL,
+  RG VARCHAR(15),
+  nome VARCHAR(30) NOT NULL,
+  sexo CHAR(1) NOT NULL,
+  dataNascimento DATE NOT NULL,
+  naturalidade VARCHAR(30) NOT NULL,
+  endereco VARCHAR(50) NOT NULL,
+  
+  CONSTRAINT PK_Candidato PRIMARY KEY (CPF),
+  CONSTRAINT UQ_Candidato UNIQUE (RG)
+);
+
+CREATE TABLE PartidoPolitico (
+  numeroEleitoral INTEGER NOT NULL,
+  nome VARCHAR(50) NOT NULL,
+  sigla VARCHAR(5) NOT NULL,
+  dataCriacao DATE NOT NULL,
+  dataRegistro DATE NOT NULL,
+  
+  CONSTRAINT PK_PartidoPolitico PRIMARY KEY (numeroEleitoral)
+);
+
+CREATE TABLE Filiacao (
+  id INTEGER NOT NULL,
+  numeroFiliacao INTEGER,
+  candidato VARCHAR(11),
+  partido INTEGER,
+  
+  CONSTRAINT PK_Filiacao PRIMARY KEY (id),
+  CONSTRAINT UQ_Filiacao UNIQUE (numeroFiliacao, candidato, partido),
+  CONSTRAINT FK_Filiacao_Candidato FOREIGN KEY (candidato)
+    REFERENCES Candidato(CPF),
+  CONSTRAINT FK_Filiacao_PartidoPolitico FOREIGN KEY (partido)
+    REFERENCES PartidoPolitico(numeroEleitoral)
+);
+
+CREATE TABLE Concorrente (
+  filiacao INTEGER NOT NULL,
+  idCargo INTEGER NOT NULL,
+  
+  CONSTRAINT PK_Concorrente PRIMARY KEY (filiacao, idCargo),
+  CONSTRAINT FK_Concorrente_Filiacao FOREIGN KEY (filiacao)
+    REFERENCES Filiacao(id),
+  CONSTRAINT FK_Concorrente_Cargo FOREIGN KEY (idCargo)
+    REFERENCES Cargo(id)
+);
+
+CREATE TABLE IntencaoVoto (
+  id INTEGER NOT NULL,
+  eleitor VARCHAR(11),
+  filiacaoConcorrente INTEGER,
+  cargoConcorrente INTEGER,
+  data DATE NOT NULL,
+  
+  CONSTRAINT PK_IntencaoVoto PRIMARY KEY (id),
+  CONSTRAINT UQ_IntencaoVoto UNIQUE (eleitor, filiacaoConcorrente,
+                                     cargoConcorrente),
+  CONSTRAINT UQ_IntencaoVoto1 UNIQUE (eleitor, data),
+  CONSTRAINT FK_IntencaoVoto_Concorrente FOREIGN KEY (filiacaoConcorrente,
+                                                      cargoConcorrente)
+    REFERENCES Concorrente(filiacao, idCargo)
+);
 
 
 
