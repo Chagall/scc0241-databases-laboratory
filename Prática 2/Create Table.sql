@@ -93,9 +93,11 @@ Cria a tabela de Cidades
 */
 CREATE TABLE Cidade (
   nome VARCHAR2(30) NOT NULL,
+  
   estado CHAR(2) NOT NULL,
   
-  CONSTRAINT PK_Cidade PRIMARY KEY (nome, estado)
+  CONSTRAINT PK_Cidade PRIMARY KEY (nome, estado),
+  CONSTRAINT CHECK_ESTADO CHECK (UPPER(estado) IN ('AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'))
 );
 
 /*
@@ -106,12 +108,12 @@ Cria a tabela de Bairros
 */
 CREATE TABLE Bairro (
   nome VARCHAR2(30) NOT NULL,
+  
   cidade VARCHAR2(30) NOT NULL,
   estado CHAR(2) NOT NULL,
   
   CONSTRAINT PK_Bairro PRIMARY KEY (nome, cidade, estado),
-  CONSTRAINT FK_Bairro_Cidade FOREIGN KEY (cidade, estado)
-    REFERENCES Cidade (nome, estado) ON DELETE CASCADE
+  CONSTRAINT FK_Bairro_Cidade FOREIGN KEY (cidade, estado) REFERENCES Cidade (nome, estado) ON DELETE CASCADE
 );
 
 /*
@@ -121,6 +123,7 @@ Cria a tabela de Zona Eleitoral
 */
 CREATE TABLE ZonaEleitoral (
   numero INTEGER NOT NULL,
+  
   tamanho INTEGER NOT NULL,
   
   CONSTRAINT PK_ZonaEleitoral PRIMARY KEY (numero)
@@ -137,6 +140,7 @@ Cria a tabela de Sessao Eleitoral
 */
 CREATE TABLE SessaoEleitoral (
   id INTEGER NOT NULL,
+  
   numero INTEGER,
   zona INTEGER,
   bairro VARCHAR2(30),
@@ -145,7 +149,7 @@ CREATE TABLE SessaoEleitoral (
   
   CONSTRAINT PK_SessaoEleitoral PRIMARY KEY (id),
   CONSTRAINT UQ_SessaoEleitoral UNIQUE (numero, zona, bairro, cidade, estado),
-  CONSTRAINT FK_SessaoEleitoral FOREIGN KEY (bairro, cidade, estado) REFERENCES Bairro(nome, cidade, estado) ON DELETE SET NULL,
+  CONSTRAINT FK_SessaoEleitoral FOREIGN KEY (bairro, cidade, estado) REFERENCES Bairro(nome, cidade, estado) ON DELETE CASCADE,
   CONSTRAINT FK_SessaoEl_ZonaEl FOREIGN KEY (zona)
     REFERENCES ZonaEleitoral (numero) ON DELETE SET NULL
 );
@@ -166,10 +170,8 @@ CREATE TABLE Urna (
   sessao INTEGER NOT NULL,
   
   CONSTRAINT PK_Urna PRIMARY KEY (codigo),
-  CONSTRAINT FK_Urna_Zona FOREIGN KEY (zona) 
-    REFERENCES ZonaEleitoral (numero) ON DELETE SET NULL,
-  CONSTRAINT FK_Urna_SessaoEleitoral FOREIGN KEY (sessao)
-    REFERENCES SessaoEleitoral (id)
+  CONSTRAINT FK_Urna_Zona FOREIGN KEY (zona) REFERENCES ZonaEleitoral (numero) ON DELETE SET NULL,
+  CONSTRAINT FK_Urna_SessaoEleitoral FOREIGN KEY (sessao) REFERENCES SessaoEleitoral (id)
 );
 
 /*
@@ -206,10 +208,10 @@ CREATE TABLE VotoBrancoNulo (
   isNulo CHAR(1),
   
   CONSTRAINT PK_VotoBrancoNulo PRIMARY KEY (eleitor, urna, data),
-  CONSTRAINT FK_VotoBrancoNulo_Eleitor FOREIGN KEY (eleitor) 
-    REFERENCES Eleitor (CPF) ON DELETE CASCADE,
-  CONSTRAINT FK_VotoBrancoNulo_Urna FOREIGN KEY (urna) 
-    REFERENCES Urna (codigo)
+  CONSTRAINT FK_VotoBrancoNulo_Eleitor FOREIGN KEY (eleitor) REFERENCES Eleitor (CPF) ON DELETE CASCADE,
+  CONSTRAINT FK_VotoBrancoNulo_Urna FOREIGN KEY (urna) REFERENCES Urna (codigo),
+  CONSTRAINT CHECK_ISBRANCO CHECK (isBranco IN ('T', 'F')),
+  CONSTRAINT CHECK_ISNULO CHECK (isNulo IN ('T', 'F'))
 );
 
 /*
@@ -231,7 +233,8 @@ CREATE TABLE Candidato (
   endereco VARCHAR2(50) NOT NULL,
   
   CONSTRAINT PK_Candidato PRIMARY KEY (CPF),
-  CONSTRAINT UQ_Candidato UNIQUE (RG)
+  CONSTRAINT UQ_Candidato UNIQUE (RG),
+  CONSTRAINT CHECK_SEXO CHECK (UPPER(sexo) in ('F','M'))
 );
 
 /*
@@ -267,10 +270,8 @@ CREATE TABLE Filiacao (
   
   CONSTRAINT PK_Filiacao PRIMARY KEY (id),
   CONSTRAINT UQ_Filiacao UNIQUE (numeroFiliacao, candidato, partido),
-  CONSTRAINT FK_Filiacao_Candidato FOREIGN KEY (candidato)
-    REFERENCES Candidato(CPF),
-  CONSTRAINT FK_Filiacao_PartidoPolitico FOREIGN KEY (partido)
-    REFERENCES PartidoPolitico(numeroEleitoral)
+  CONSTRAINT FK_Filiacao_Candidato FOREIGN KEY (candidato) REFERENCES Candidato(CPF),
+  CONSTRAINT FK_Filiacao_PartidoPolitico FOREIGN KEY (partido) REFERENCES PartidoPolitico(numeroEleitoral)
 );
 
 /*
@@ -297,10 +298,8 @@ CREATE TABLE Concorrente (
   idCargo INTEGER NOT NULL,
   
   CONSTRAINT PK_Concorrente PRIMARY KEY (filiacao, idCargo),
-  CONSTRAINT FK_Concorrente_Filiacao FOREIGN KEY (filiacao)
-    REFERENCES Filiacao(id),
-  CONSTRAINT FK_Concorrente_Cargo FOREIGN KEY (idCargo)
-    REFERENCES Cargo(id)
+  CONSTRAINT FK_Concorrente_Filiacao FOREIGN KEY (filiacao) REFERENCES Filiacao(id),
+  CONSTRAINT FK_Concorrente_Cargo FOREIGN KEY (idCargo) REFERENCES Cargo(id)
 );
 
 /*
@@ -335,18 +334,16 @@ Cria a tabela de IntencaoVoto
 */
 CREATE TABLE IntencaoVoto (
   id INTEGER NOT NULL,
+  
   eleitor VARCHAR2(11),
   filiacaoConcorrente INTEGER,
   cargoConcorrente INTEGER,
   data DATE NOT NULL,
   
   CONSTRAINT PK_IntencaoVoto PRIMARY KEY (id),
-  CONSTRAINT UQ_IntencaoVoto UNIQUE (eleitor, filiacaoConcorrente,
-                                     cargoConcorrente),
+  CONSTRAINT UQ_IntencaoVoto UNIQUE (eleitor, filiacaoConcorrente, cargoConcorrente),
   CONSTRAINT UQ_IntencaoVoto1 UNIQUE (eleitor, data),
-  CONSTRAINT FK_IntencaoVoto_Concorrente FOREIGN KEY (filiacaoConcorrente,
-                                                      cargoConcorrente)
-    REFERENCES Concorrente(filiacao, idCargo)
+  CONSTRAINT FK_IntencaoVoto_Concorrente FOREIGN KEY (filiacaoConcorrente, cargoConcorrente) REFERENCES Concorrente(filiacao, idCargo)
 );
 
 /*
@@ -430,7 +427,8 @@ CREATE TABLE Prefeito (
   
   CONSTRAINT PK_PREFEITO PRIMARY KEY (cargo),
   CONSTRAINT SK_PREFEITO UNIQUE (nome, numCadeira),
-  CONSTRAINT FK_PREFEITO_MUNICIPAL FOREIGN KEY (cargo) REFERENCES Municipal(cargo) ON DELETE CASCADE
+  CONSTRAINT FK_PREFEITO_MUNICIPAL FOREIGN KEY (cargo) REFERENCES Municipal(cargo) ON DELETE CASCADE,
+  CONSTRAINT CHECK_VICE CHECK (UPPER(vice) in ('T', 'F'))
 );
 
 /*
@@ -469,7 +467,8 @@ CREATE TABLE Governador (
   
   CONSTRAINT PK_GOVERNADOR PRIMARY KEY (cargo),
   CONSTRAINT SK_GOVERNADOR UNIQUE (nome, numCadeira),
-  CONSTRAINT FK_GOVERNADOR_ESTADUAL FOREIGN KEY (cargo) REFERENCES Estadual(cargo) ON DELETE CASCADE 
+  CONSTRAINT FK_GOVERNADOR_ESTADUAL FOREIGN KEY (cargo) REFERENCES Estadual(cargo) ON DELETE CASCADE,
+    CONSTRAINT CHECK_VICE CHECK (UPPER(vice) in ('T', 'F'))
 );
 
 /*
@@ -527,5 +526,6 @@ CREATE TABLE Presidente (
   
   CONSTRAINT PK_PRESIDENTE PRIMARY KEY (cargo),
   CONSTRAINT SK_PRESIDENTE UNIQUE (nome, numCadeira),
-  CONSTRAINT FK_PRESIDENTE_FEDERAL FOREIGN KEY (cargo) REFERENCES Federal(cargo) ON DELETE CASCADE 
+  CONSTRAINT FK_PRESIDENTE_FEDERAL FOREIGN KEY (cargo) REFERENCES Federal(cargo) ON DELETE CASCADE,
+  CONSTRAINT CHECK_VICE CHECK (UPPER(vice) in ('T', 'F'))
 );
