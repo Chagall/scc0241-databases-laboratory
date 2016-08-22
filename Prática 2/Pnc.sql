@@ -1,6 +1,8 @@
+/* ----- Sequencias Utilizadas pelas Tabelas ----- */
+
 /*
   Sequence: ID Voto
-  Faz: Sequência que gera os números identificadores (ids) para a tabela Voto
+  Faz: Sequencia que gera os numeros identificadores (ids) para a tabela Voto
 */
 CREATE SEQUENCE idVoto
   START WITH 1
@@ -11,28 +13,8 @@ CREATE SEQUENCE idVoto
   NOCACHE;
 
 /*
-  Table: Voto
-  O que armazena: Os votos de eleitores em uma urna, para um determinado candidato
-  e em uma determinada data
-*/
-CREATE TABLE Voto (
-  id                    INTEGER NOT NULL,
-  
-  eleitor               VARCHAR2(20), /* TODO: provavelmente vai ter que modificar */
-  urna                  INTEGER,
-  filiacaoConcorrente   INTEGER,
-  cargoConcorrente      INTEGER,
-  data                  DATE,    
-
-  CONSTRAINT PK_VOTO PRIMARY KEY (id),
-  CONSTRAINT SK_VOTO UNIQUE (eleitor, urna, filiacaoConcorrente, cargoConcorrente, data),
-  CONSTRAINT TK_VOTO UNIQUE (eleitor, data),
-  CONSTRAINT FK_VOTO_CONCORRENTE FOREIGN KEY (filiacaoConcorrente,cargoConcorrente) REFERENCES Concorrente(filiacao,idCargo)
-);
-
-/*
   Sequence: ID Cargo
-  Faz: Sequência que gera os números identificadores (ids) para a tabela Cargo
+  Faz: Sequencia que gera os numeros identificadores (ids) para a tabela Cargo
 */
 CREATE SEQUENCE idCargo
   START WITH 1
@@ -41,16 +23,40 @@ CREATE SEQUENCE idCargo
   MINVALUE 1
   NOCYCLE
   NOCACHE;
+  
+/* ----- Tabelas ----- */  
+
+/*
+  Table: Voto
+  O que armazena: Os votos de eleitores em uma urna, para um determinado candidato
+  e em uma determinada data
+*/
+CREATE TABLE Voto (
+  id                    INTEGER NOT NULL,
+  
+  eleitor               VARCHAR2(11) NOT NULL,
+  urna                  INTEGER NOT NULL,
+  filiacaoConcorrente   INTEGER NOT NULL,
+  cargoConcorrente      INTEGER NOT NULL,
+  data                  DATE NOT NULL,    
+
+  CONSTRAINT PK_VOTO PRIMARY KEY (id),
+  CONSTRAINT SK_VOTO UNIQUE (eleitor, urna, filiacaoConcorrente, cargoConcorrente, data),
+  CONSTRAINT TK_VOTO UNIQUE (eleitor, data),
+  CONSTRAINT FK_VOTO_ELEITOR FOREIGN KEY (eleitor) REFERENCES Eleitor(CPF),
+  CONSTRAINT FK_VOTO_URNA FOREIGN KEY (urna) REFERENCES Urna(codigo),
+  CONSTRAINT FK_VOTO_CONCORRENTE FOREIGN KEY (filiacaoConcorrente,cargoConcorrente) REFERENCES Concorrente(filiacao,idCargo)
+);
 
 /*
   Table: Cargo
-  O que armazena: O número identificador do cargo e a esfera a qual ele pertence
-  As possíveis esferas são: Municipal, Estadual e Federal
+  O que armazena: O numero identificador do cargo e a esfera a qual ele pertence
+  As possiveis esferas sao: Municipal, Estadual e Federal
 */  
 CREATE TABLE Cargo ( 
   id      INTEGER NOT NULL,
   
-  esfera  VARCHAR2(9) NOT NULL, /* Contém 9 caracteres pois a maior palavra armazenada é 'Municipal' */       
+  esfera  VARCHAR2(9) NOT NULL, /* Contem 9 caracteres pois a maior palavra armazenada e 'Municipal' */       
   
   CONSTRAINT PK_CARGO PRIMARY KEY (id),
   CONSTRAINT CHECK_ESFERA CHECK (UPPER(esfera) in ('MUNICIPAL','ESTADUAL','FEDERAL'))
@@ -58,13 +64,13 @@ CREATE TABLE Cargo (
 
 /*
   Table: Municipal
-  O que armazena: O número identificador de um cargo municipal e o tipo do cargo municipal.
-  Os possíveis cargos são: Vereador e Prefeito
+  O que armazena: O numero identificador de um cargo municipal e o tipo do cargo municipal.
+  Os possiveis cargos sao: Vereador e Prefeito
 */ 
 CREATE TABLE Municipal (
   cargo INTEGER NOT NULL,
   
-  tipo CHAR(8) NOT NULL, /* Contém exatamente 8 caracteres pois as duas palavras armazenadas: Vereador e Prefeito têm o mesmo tamanho */
+  tipo CHAR(8) NOT NULL, /* Contem exatamente 8 caracteres pois as duas palavras armazenadas: Vereador e Prefeito tem o mesmo tamanho */
   
   CONSTRAINT PK_MUNICIPAL PRIMARY KEY (cargo),
   CONSTRAINT FK_MUNICIPAL_CARGO FOREIGN KEY (cargo) REFERENCES Cargo(id),
@@ -73,13 +79,13 @@ CREATE TABLE Municipal (
 
 /*
   Table: Estadual
-  O que armazena: O número identificador de um cargo estadual e o tipo do cargo estadual.
-  Os possíveis cargos são: Deputado Estadual e Governador
+  O que armazena: O numero identificador de um cargo estadual e o tipo do cargo estadual.
+  Os possiveis cargos sao: Deputado Estadual e Governador
 */ 
 CREATE TABLE Estadual (
   cargo INTEGER NOT NULL,
   
-  tipo VARCHAR2(17) NOT NULL, /* VARCHAR(17) pois a palavra armazenada de maior tamanho é DEPUTADO ESTADUAL que tem 17 caracteres */
+  tipo VARCHAR2(17) NOT NULL, /* VARCHAR(17) pois a palavra armazenada de maior tamanho e DEPUTADO ESTADUAL que tem 17 caracteres */
   
   CONSTRAINT PK_ESTADUAL PRIMARY KEY (cargo),
   CONSTRAINT FK_ESTADUAL_CARGO FOREIGN KEY (cargo) REFERENCES Cargo(id),
@@ -88,13 +94,13 @@ CREATE TABLE Estadual (
 
 /*
   Table: Federal
-  O que armazena: O número identificador de um cargo federal e o tipo do cargo federal.
-  Os possíveis cargos são: Deputado Federal, Senador e Presidente
+  O que armazena: O numero identificador de um cargo federal e o tipo do cargo federal.
+  Os possiveis cargos sao: Deputado Federal, Senador e Presidente
 */ 
 CREATE TABLE Federal (
   cargo INTEGER NOT NULL,
   
-  tipo VARCHAR2(16) NOT NULL, /* VARCHAR(16) pois a palavra armazenada de maior tamanho é DEPUTADO FEDERAL que tem 17 caracteres */
+  tipo VARCHAR2(16) NOT NULL, /* VARCHAR(16) pois a palavra armazenada de maior tamanho e DEPUTADO FEDERAL que tem 17 caracteres */
   
   CONSTRAINT PK_FEDERAL PRIMARY KEY (cargo),
   CONSTRAINT FK_FEDERAL_CARGO FOREIGN KEY (cargo) REFERENCES Cargo(id),
@@ -103,9 +109,9 @@ CREATE TABLE Federal (
 
 /*
   Table: Vereador
-  O que armazena: O número identificador do cargo de vereador, o nome do cargo,
-  número da cadeira do vereador, quantos anos de mandato tem o cargo e o ano da
-  ultima eleição para verador no Brasil
+  O que armazena: O numero identificador do cargo de vereador, o nome do cargo,
+  numero da cadeira do vereador, quantos anos de mandato tem o cargo e o ano da
+  ultima eleicao para verador no Brasil
 */ 
 CREATE TABLE Vereador (
   cargo       INTEGER NOT NULL,
@@ -122,9 +128,9 @@ CREATE TABLE Vereador (
 
 /*
   Table: Prefeito
-  O que armazena: O número identificador do cargo de prefeito, o nome do cargo,
-  número da cadeira do prefeito, quantos anos de mandato tem o cargo e o ano da
-  ultima eleição para prefeito no Brasil
+  O que armazena: O numero identificador do cargo de prefeito, o nome do cargo,
+  numero da cadeira do prefeito, quantos anos de mandato tem o cargo e o ano da
+  ultima eleicao para prefeito no Brasil
 */ 
 CREATE TABLE Prefeito (
   cargo       INTEGER NOT NULL,
@@ -133,7 +139,7 @@ CREATE TABLE Prefeito (
   numCadeira  INTEGER NOT NULL,
   anosMandato INTEGER NOT NULL,
   anoBase     DATE,
-  vice        BOOLEAN NOT NULL, /* Diz de o cargo em questão é de prefeito 'FALSE' ou vice-prefeito 'TRUE' */
+  vice        BOOLEAN NOT NULL, /* Diz de o cargo em questao e de prefeito 'FALSE' ou vice-prefeito 'TRUE' */
   
   CONSTRAINT PK_PREFEITO PRIMARY KEY (cargo),
   CONSTRAINT SK_PREFEITO UNIQUE (nome, numCadeira),
@@ -142,9 +148,9 @@ CREATE TABLE Prefeito (
 
 /*
   Table: Deputado Estadual
-  O que armazena: O número identificador do cargo de Deputado Estadual, o nome do cargo,
-  número da cadeira do Deputado Estadual, quantos anos de mandato tem o cargo e o ano da
-  ultima eleição para Deputado Estadual no Brasil
+  O que armazena: O numero identificador do cargo de Deputado Estadual, o nome do cargo,
+  numero da cadeira do Deputado Estadual, quantos anos de mandato tem o cargo e o ano da
+  ultima eleicao para Deputado Estadual no Brasil
 */ 
 CREATE TABLE DeputadoEstadual (
   cargo       INTEGER NOT NULL,
@@ -161,9 +167,9 @@ CREATE TABLE DeputadoEstadual (
 
 /*
   Table: Governador
-  O que armazena: O número identificador do cargo de Governador, o nome do cargo,
-  número da cadeira do Governador, quantos anos de mandato tem o cargo e o ano da
-  ultima eleição para Governador no Brasil
+  O que armazena: O numero identificador do cargo de Governador, o nome do cargo,
+  numero da cadeira do Governador, quantos anos de mandato tem o cargo e o ano da
+  ultima eleicao para Governador no Brasil
 */ 
 CREATE TABLE Governador (
   cargo       INTEGER NOT NULL,
@@ -181,9 +187,9 @@ CREATE TABLE Governador (
 
 /*
   Table: Deputado Federal
-  O que armazena: O número identificador do cargo de Deputado Federal, o nome do cargo,
-  número da cadeira do Deputado Federal, quantos anos de mandato tem o cargo e o ano da
-  ultima eleição para Deputado Federal no Brasil
+  O que armazena: O numero identificador do cargo de Deputado Federal, o nome do cargo,
+  numero da cadeira do Deputado Federal, quantos anos de mandato tem o cargo e o ano da
+  ultima eleicao para Deputado Federal no Brasil
 */ 
 CREATE TABLE DeputadoFederal (
   cargo       INTEGER NOT NULL,
@@ -200,9 +206,9 @@ CREATE TABLE DeputadoFederal (
 
 /*
   Table: Senador
-  O que armazena: O número identificador do cargo de Senador, o nome do cargo,
-  número da cadeira do Senador, quantos anos de mandato tem o cargo e o ano da
-  ultima eleição para Senador no Brasil
+  O que armazena: O numero identificador do cargo de Senador, o nome do cargo,
+  numero da cadeira do Senador, quantos anos de mandato tem o cargo e o ano da
+  ultima eleicao para Senador no Brasil
 */ 
 CREATE TABLE Senador (
   cargo       INTEGER NOT NULL,
@@ -219,9 +225,9 @@ CREATE TABLE Senador (
 
 /*
   Table: Presidente
-  O que armazena: O número identificador do cargo de Presidente, o nome do cargo,
-  número da cadeira do Presidente, quantos anos de mandato tem o cargo e o ano da
-  ultima eleição para Presidente no Brasil
+  O que armazena: O numero identificador do cargo de Presidente, o nome do cargo,
+  numero da cadeira do Presidente, quantos anos de mandato tem o cargo e o ano da
+  ultima eleicao para Presidente no Brasil
 */ 
 CREATE TABLE Presidente (
   cargo       INTEGER NOT NULL,
