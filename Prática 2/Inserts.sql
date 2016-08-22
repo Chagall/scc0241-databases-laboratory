@@ -133,9 +133,9 @@ INSERT INTO Concorrente (filiacao, idCargo) VALUES (14,14);
 INSERT INTO Concorrente (filiacao, idCargo) VALUES (15,15);
 
 /* Insert dos Votos */
-INSERT INTO Voto (id, eleitor, urna, filiacaoConcorrente, cargoConcorrente, data) VALUES (idVoto.NextVal, 02526673100, 2, 2, TO_DATE('2015/03/09 8:30:25', 'YYYY/MM/DD HH:MI:SS'));
-INSERT INTO Voto (id, eleitor, urna, filiacaoConcorrente, cargoConcorrente, data) VALUES (idVoto.NextVal, 42230739824, 3, 3, TO_DATE('2015/03/09 8:31:25', 'YYYY/MM/DD HH:MI:SS'));
-INSERT INTO Voto (id, eleitor, urna, filiacaoConcorrente, cargoConcorrente, data) VALUES (idVoto.NextVal, 23145678965, 4, 4, TO_DATE('2016/03/09 8:32:25', 'YYYY/MM/DD HH:MI:SS'));
+INSERT INTO Voto (id, eleitor, urna, filiacaoConcorrente, cargoConcorrente, data) VALUES (idVoto.NextVal, 02526673100, 2, 2, 2, TO_DATE('2015/03/09 8:30:25', 'YYYY/MM/DD HH:MI:SS'));
+INSERT INTO Voto (id, eleitor, urna, filiacaoConcorrente, cargoConcorrente, data) VALUES (idVoto.NextVal, 42230739824, 2, 3, 3, TO_DATE('2015/03/09 8:31:25', 'YYYY/MM/DD HH:MI:SS'));
+INSERT INTO Voto (id, eleitor, urna, filiacaoConcorrente, cargoConcorrente, data) VALUES (idVoto.NextVal, 23145678965, 2, 4, 4, TO_DATE('2016/03/09 8:32:25', 'YYYY/MM/DD HH:MI:SS'));
 
 /* Insert das Intencoes de Voto */
 INSERT INTO IntencaoVoto (id, eleitor, filiacaoConcorrente, cargoConcorrente, data) VALUES (idIntencaoVoto.NextVal, 02526673100, 2, 2, TO_DATE('2014/03/09 8:32:25', 'YYYY/MM/DD HH:MI:SS'));
