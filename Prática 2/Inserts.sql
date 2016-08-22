@@ -133,9 +133,9 @@ INSERT INTO Concorrente (filiacao, idCargo) VALUES (14,14);
 INSERT INTO Concorrente (filiacao, idCargo) VALUES (15,15);
 
 /* Insert dos Votos */
-INSERT INTO Voto (id, eleitor, urna, filiacaoConcorrente, cargoConcorrente, data) VALUES (idVoto.NextVal, 02526673100, 2, 2, 2, TO_DATE('2015/03/09 8:30:25', 'YYYY/MM/DD HH:MI:SS'));
-INSERT INTO Voto (id, eleitor, urna, filiacaoConcorrente, cargoConcorrente, data) VALUES (idVoto.NextVal, 42230739824, 2, 3, 3, TO_DATE('2015/03/09 8:31:25', 'YYYY/MM/DD HH:MI:SS'));
-INSERT INTO Voto (id, eleitor, urna, filiacaoConcorrente, cargoConcorrente, data) VALUES (idVoto.NextVal, 23145678965, 2, 4, 4, TO_DATE('2016/03/09 8:32:25', 'YYYY/MM/DD HH:MI:SS'));
+INSERT INTO Voto (id, eleitor, urna, filiacaoConcorrente, cargoConcorrente, data) VALUES (idVoto.NextVal, '02526673100', 2, 2, 2, TO_DATE('2015/03/09 8:30:25', 'YYYY/MM/DD HH:MI:SS'));
+INSERT INTO Voto (id, eleitor, urna, filiacaoConcorrente, cargoConcorrente, data) VALUES (idVoto.NextVal, '42230739824', 2, 3, 3, TO_DATE('2015/03/09 8:31:25', 'YYYY/MM/DD HH:MI:SS'));
+INSERT INTO Voto (id, eleitor, urna, filiacaoConcorrente, cargoConcorrente, data) VALUES (idVoto.NextVal, '23145678965', 2, 4, 4, TO_DATE('2016/03/09 8:32:25', 'YYYY/MM/DD HH:MI:SS'));
 
 /* Insert das Intencoes de Voto */
 INSERT INTO IntencaoVoto (id, eleitor, filiacaoConcorrente, cargoConcorrente, data) VALUES (idIntencaoVoto.NextVal, 02526673100, 2, 2, TO_DATE('2014/03/09 8:32:25', 'YYYY/MM/DD HH:MI:SS'));
@@ -143,24 +143,24 @@ INSERT INTO IntencaoVoto (id, eleitor, filiacaoConcorrente, cargoConcorrente, da
 INSERT INTO IntencaoVoto (id, eleitor, filiacaoConcorrente, cargoConcorrente, data) VALUES (idIntencaoVoto.NextVal, 42230739824, 4, 4, TO_DATE('2014/03/09 8:34:25', 'YYYY/MM/DD HH:MI:SS'));
 
 /* Insert dos Cargos Municipais */
-INSERT INTO Municipal (id, tipo) VALUES (2, 'Prefeito');
-INSERT INTO Municipal (id, tipo) VALUES (3, 'Prefeito');
-INSERT INTO Municipal (id, tipo) VALUES (4, 'Vereador');
-INSERT INTO Municipal (id, tipo) VALUES (5, 'Vereador');
+INSERT INTO Municipal (cargo, tipo) VALUES (2, 'Prefeito');
+INSERT INTO Municipal (cargo, tipo) VALUES (3, 'Prefeito');
+INSERT INTO Municipal (cargo, tipo) VALUES (4, 'Vereador');
+INSERT INTO Municipal (cargo, tipo) VALUES (5, 'Vereador');
 
 /* Insert dos Cargos Estaduais */
-INSERT INTO Estadual (id, tipo) values (6, 'Deputado Estadual');
-INSERT INTO Estadual (id, tipo) values (7, 'Deputado Estadual');
-INSERT INTO Estadual (id, tipo) values (8, 'Governador');
-INSERT INTO Estadual (id, tipo) values (9, 'Governador');
+INSERT INTO Estadual (cargo, tipo) values (6, 'Deputado Estadual');
+INSERT INTO Estadual (cargo, tipo) values (7, 'Deputado Estadual');
+INSERT INTO Estadual (cargo, tipo) values (8, 'Governador');
+INSERT INTO Estadual (cargo, tipo) values (9, 'Governador');
 
 /* Insert dos Cargos Federais */
-INSERT INTO Federal (id, tipo) values (10, 'Deputado Federal');
-INSERT INTO Federal (id, tipo) values (11, 'Deputado Federal');
-INSERT INTO Federal (id, tipo) values (12, 'Senador');
-INSERT INTO Federal (id, tipo) values (13, 'Senador');
-INSERT INTO Federal (id, tipo) values (14, 'Presidente');
-INSERT INTO Federal (id, tipo) values (15, 'Presidene');
+INSERT INTO Federal (cargo, tipo) values (10, 'Deputado Federal');
+INSERT INTO Federal (cargo, tipo) values (11, 'Deputado Federal');
+INSERT INTO Federal (cargo, tipo) values (12, 'Senador');
+INSERT INTO Federal (cargo, tipo) values (13, 'Senador');
+INSERT INTO Federal (cargo, tipo) values (14, 'Presidente');
+INSERT INTO Federal (cargo, tipo) values (15, 'Presidente');
 
 /* Insert dos Vereadores */
 INSERT INTO Vereador (cargo, nome, numCadeira, anosMandato, anoBase) VALUES(4, 'Vereador', 1, 4, TO_DATE('2010', 'YYYY'));
