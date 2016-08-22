@@ -4,7 +4,7 @@ Cria a tabela de Cidades
 - estado: estado da cidade (SP, RJ, BA etc)
 */
 CREATE TABLE Cidade (
-  nome VARCHAR(30) NOT NULL,
+  nome VARCHAR2(30) NOT NULL,
   estado CHAR(2) NOT NULL,
   
   CONSTRAINT PK_Cidade PRIMARY KEY (nome, estado)
@@ -17,8 +17,8 @@ Cria a tabela de Bairros
 - estado: estado do bairro (SP, RJ, BA etc)
 */
 CREATE TABLE Bairro (
-  nome VARCHAR(30) NOT NULL,
-  cidade VARCHAR(30) NOT NULL,
+  nome VARCHAR2(30) NOT NULL,
+  cidade VARCHAR2(30) NOT NULL,
   estado CHAR(2) NOT NULL,
   
   CONSTRAINT PK_Bairro PRIMARY KEY (nome, cidade, estado),
@@ -66,8 +66,8 @@ CREATE TABLE SessaoEleitoral (
   id INTEGER NOT NULL,
   numero INTEGER,
   zona INTEGER,
-  bairro VARCHAR(30),
-  cidade VARCHAR(30),
+  bairro VARCHAR2(30),
+  cidade VARCHAR2(30),
   estado CHAR(2),
   
   CONSTRAINT PK_SessaoEleitoral PRIMARY KEY (id),
@@ -91,7 +91,7 @@ CREATE SEQUENCE codigoZonaEleitoral
 
 CREATE TABLE Urna (
   codigo INTEGER NOT NULL,
-  fabricante VARCHAR(20) NOT NULL,
+  fabricante VARCHAR2(20) NOT NULL,
   numRegistro INTEGER NOT NULL,
   zona INTEGER NOT NULL,
   sessao INTEGER NOT NULL,
@@ -104,10 +104,10 @@ CREATE TABLE Urna (
 );
 
 CREATE TABLE Eleitor (
-  CPF VARCHAR(11) NOT NULL,
-  RG VARCHAR(15),
-  tituloEleitoral  VARCHAR(15),
-  nome VARCHAR(30),
+  CPF VARCHAR2(11) NOT NULL,
+  RG VARCHAR2(15),
+  tituloEleitoral  VARCHAR2(15),
+  nome VARCHAR2(30),
   
   CONSTRAINT PK_Eleitor PRIMARY KEY (CPF),
   CONSTRAINT UQ_Eleitor_RG UNIQUE (RG),
@@ -115,7 +115,7 @@ CREATE TABLE Eleitor (
 );
 
 CREATE TABLE VotoBrancoNulo (
-  eleitor VARCHAR(11) NOT NULL,
+  eleitor VARCHAR2(11) NOT NULL,
   urna INTEGER NOT NULL, 
   data DATE NOT NULL,
   isBranco CHAR(1),
@@ -129,13 +129,13 @@ CREATE TABLE VotoBrancoNulo (
 );
 
 CREATE TABLE Candidato (
-  CPF VARCHAR(11) NOT NULL,
-  RG VARCHAR(15),
-  nome VARCHAR(30) NOT NULL,
+  CPF VARCHAR2(11) NOT NULL,
+  RG VARCHAR2(15),
+  nome VARCHAR2(30) NOT NULL,
   sexo CHAR(1) NOT NULL,
   dataNascimento DATE NOT NULL,
-  naturalidade VARCHAR(30) NOT NULL,
-  endereco VARCHAR(50) NOT NULL,
+  naturalidade VARCHAR2(30) NOT NULL,
+  endereco VARCHAR2(50) NOT NULL,
   
   CONSTRAINT PK_Candidato PRIMARY KEY (CPF),
   CONSTRAINT UQ_Candidato UNIQUE (RG)
@@ -143,8 +143,8 @@ CREATE TABLE Candidato (
 
 CREATE TABLE PartidoPolitico (
   numeroEleitoral INTEGER NOT NULL,
-  nome VARCHAR(50) NOT NULL,
-  sigla VARCHAR(5) NOT NULL,
+  nome VARCHAR2(50) NOT NULL,
+  sigla VARCHAR2(5) NOT NULL,
   dataCriacao DATE NOT NULL,
   dataRegistro DATE NOT NULL,
   
@@ -166,7 +166,7 @@ CREATE SEQUENCE idFiliacao
 CREATE TABLE Filiacao (
   id INTEGER NOT NULL,
   numeroFiliacao INTEGER,
-  candidato VARCHAR(11),
+  candidato VARCHAR2(11),
   partido INTEGER,
   
   CONSTRAINT PK_Filiacao PRIMARY KEY (id),
@@ -202,7 +202,7 @@ CREATE SEQUENCE idIntencaoVoto
 
 CREATE TABLE IntencaoVoto (
   id INTEGER NOT NULL,
-  eleitor VARCHAR(11),
+  eleitor VARCHAR2(11),
   filiacaoConcorrente INTEGER,
   cargoConcorrente INTEGER,
   data DATE NOT NULL,
