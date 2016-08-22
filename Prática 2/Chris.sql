@@ -62,6 +62,15 @@ CREATE SEQUENCE idSessaoEleitoral
   NOCYCLE
   NOCACHE;
 
+/*
+Cria a tabela de Sessao Eleitoral
+- id: id identificador da sessao
+- numero: numero de votantes da sessao
+- zona: zona onde está a sessao
+- bairro: bairro da sessao
+- estado: estado da sessao
+- cidade: cidade da sessao
+*/
 CREATE TABLE SessaoEleitoral (
   id INTEGER NOT NULL,
   numero INTEGER,
@@ -88,7 +97,14 @@ CREATE SEQUENCE codigoZonaEleitoral
   NOCYCLE
   NOCACHE;
 
-
+/*
+Cria a tabela de Urna
+- codigo: codigo identificador da urna
+- fabricante: fabricante da urna
+- numRegistro: numero de registro da urna
+- zona: zona da urna
+- sessao: sessao onde está a urna
+*/
 CREATE TABLE Urna (
   codigo INTEGER NOT NULL,
   fabricante VARCHAR2(20) NOT NULL,
@@ -103,6 +119,13 @@ CREATE TABLE Urna (
     REFERENCES SessaoEleitoral (id)
 );
 
+/*
+Cria a tabela de Eleitor
+- CPF: cpf do Eleitor
+- RG: rg do eleitor
+- tituloEleitoral: titulo eleitoral do eleitor
+- nome: nome do eleitor
+*/
 CREATE TABLE Eleitor (
   CPF VARCHAR2(11) NOT NULL,
   RG VARCHAR2(15),
@@ -114,6 +137,14 @@ CREATE TABLE Eleitor (
   CONSTRAINT UQ_Eleitor_tituloEleitoral UNIQUE (tituloEleitoral)
 );
 
+/*
+Cria a tabela de VotoBrancoNulo
+- eleitor: nome do eleitor do voto
+- urna: urna do voto
+- data: data do voto
+- isBranco: t para true, f para falso
+- isNulo: t para true, f para falso
+*/
 CREATE TABLE VotoBrancoNulo (
   eleitor VARCHAR2(11) NOT NULL,
   urna INTEGER NOT NULL, 
@@ -128,6 +159,15 @@ CREATE TABLE VotoBrancoNulo (
     REFERENCES Urna (codigo)
 );
 
+/*
+Cria a tabela de Candidato
+- CPF: cpf do candidato
+- RG: rg do candidato
+- sexo: M para masculino, F para feminino
+- dataNascimento: data do nascimento do candidato
+- naturalidade: naturalidade do candidato
+- endereco: endereço do candidato
+*/
 CREATE TABLE Candidato (
   CPF VARCHAR2(11) NOT NULL,
   RG VARCHAR2(15),
@@ -141,6 +181,14 @@ CREATE TABLE Candidato (
   CONSTRAINT UQ_Candidato UNIQUE (RG)
 );
 
+/*
+Cria a tabela de PartidoPolitico
+- numeroEleitoral: numero eleitoral do partido
+- nome: nome do partido
+- sigla: sigla do partido
+- dataCriacao: data de criação do partido
+- dataRegistro: data de registro do partido
+*/
 CREATE TABLE PartidoPolitico (
   numeroEleitoral INTEGER NOT NULL,
   nome VARCHAR2(50) NOT NULL,
@@ -163,6 +211,13 @@ CREATE SEQUENCE idFiliacao
   NOCYCLE
   NOCACHE;
 
+/*
+Cria a tabela de Filiacao
+- id: identificador da filiacao
+- numeroFiliacao: numero da filiacao
+- candidato: cpf do candidato da filiacao
+- partido: numero id do partido da filiacao
+*/
 CREATE TABLE Filiacao (
   id INTEGER NOT NULL,
   numeroFiliacao INTEGER,
@@ -177,6 +232,11 @@ CREATE TABLE Filiacao (
     REFERENCES PartidoPolitico(numeroEleitoral)
 );
 
+/*
+Cria a tabela de Concorrente
+- filiacao: numero identificador da filiacao do Concorrente
+- idCargo: id do cargo do Concorrente
+*/
 CREATE TABLE Concorrente (
   filiacao INTEGER NOT NULL,
   idCargo INTEGER NOT NULL,
@@ -200,6 +260,14 @@ CREATE SEQUENCE idIntencaoVoto
   NOCYCLE
   NOCACHE;
 
+/*
+Cria a tabela de IntencaoVoto
+- id: numero identificador da intencao de voto
+- eleitor: eleitor da intencao de voto
+- filiacaoConcorrente: filiacao concorrente da intencao de voto
+- cargoConcorrente: cargo concorrente da intencao de voto
+- data: data da intencao de voto
+*/
 CREATE TABLE IntencaoVoto (
   id INTEGER NOT NULL,
   eleitor VARCHAR2(11),
