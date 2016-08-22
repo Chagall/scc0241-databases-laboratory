@@ -145,7 +145,7 @@ CREATE TABLE SessaoEleitoral (
   
   CONSTRAINT PK_SessaoEleitoral PRIMARY KEY (id),
   CONSTRAINT UQ_SessaoEleitoral UNIQUE (numero, zona, bairro, cidade, estado),
-  CONSTRAINT FK_SessaoEleitoral FOREIGN KEY (bairro, cidade, estado) REFERENCES Bairro(nome, cidade, estado),
+  CONSTRAINT FK_SessaoEleitoral FOREIGN KEY (bairro, cidade, estado) REFERENCES Bairro(nome, cidade, estado) ON DELETE SET NULL,
   CONSTRAINT FK_SessaoEl_ZonaEl FOREIGN KEY (zona)
     REFERENCES ZonaEleitoral (numero) ON DELETE SET NULL
 );
