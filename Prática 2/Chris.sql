@@ -27,6 +27,18 @@ CREATE TABLE Bairro (
 );
 
 /*
+Faz: Sequência que gera os números identificadores (ids) 
+para a tabela ZonaEleitoral
+*/
+CREATE SEQUENCE numeroZonaEleitoral
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  MINVALUE 1
+  NOCYCLE
+  NOCACHE;
+
+/*
 Cria a tabela de Zona Eleitoral
 - numero: numero identificador da zona
 - tamanho: numero de votantes na zona
@@ -38,6 +50,17 @@ CREATE TABLE ZonaEleitoral (
   CONSTRAINT PK_ZonaEleitoral PRIMARY KEY (numero)
 );
 
+/*
+Faz: Sequência que gera os números identificadores (ids) 
+para a tabela SessaoEleitoral
+*/
+CREATE SEQUENCE idSessaoEleitoral
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  MINVALUE 1
+  NOCYCLE
+  NOCACHE;
 
 CREATE TABLE SessaoEleitoral (
   id INTEGER NOT NULL,
@@ -52,6 +75,19 @@ CREATE TABLE SessaoEleitoral (
   CONSTRAINT FK_SessaoEleitoral_ZonaEleitoral FOREIGN KEY (zona)
     REFERENCES ZonaEleitoral (numero) ON DELETE SET NULL
 );
+
+/*
+Faz: Sequência que gera os números identificadores (ids) 
+para a tabela Urna
+*/
+CREATE SEQUENCE codigoZonaEleitoral
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  MINVALUE 1
+  NOCYCLE
+  NOCACHE;
+
 
 CREATE TABLE Urna (
   codigo INTEGER NOT NULL,
@@ -115,6 +151,18 @@ CREATE TABLE PartidoPolitico (
   CONSTRAINT PK_PartidoPolitico PRIMARY KEY (numeroEleitoral)
 );
 
+/*
+Faz: Sequência que gera os números identificadores (ids) 
+para a tabela Filiacao
+*/
+CREATE SEQUENCE idFiliacao
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  MINVALUE 1
+  NOCYCLE
+  NOCACHE;
+
 CREATE TABLE Filiacao (
   id INTEGER NOT NULL,
   numeroFiliacao INTEGER,
@@ -139,6 +187,18 @@ CREATE TABLE Concorrente (
   CONSTRAINT FK_Concorrente_Cargo FOREIGN KEY (idCargo)
     REFERENCES Cargo(id)
 );
+
+/*
+Faz: Sequência que gera os números identificadores (ids) 
+para a tabela IntencaoVoto
+*/
+CREATE SEQUENCE idIntencaoVoto
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  MINVALUE 1
+  NOCYCLE
+  NOCACHE;
 
 CREATE TABLE IntencaoVoto (
   id INTEGER NOT NULL,
