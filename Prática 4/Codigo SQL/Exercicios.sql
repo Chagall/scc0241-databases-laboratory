@@ -73,22 +73,57 @@ SELECT DISTINCT Cnd.Reg, Cnd.CodCargo, Cnd.Ano, Cnd.NroVice FROM CANDIDATURA Cnd
 		Os campos NroVice para o candidato -1 agora aparecem com o valor 10 no SERIALIZABLE e 12 no READ COMMITED
 */
 
-/* 
-	Ex. 2
-		- 2. Visões não materializadas
-		a) (1.5) Crie um relatório (visão) com todos os candidatos que se candidataram mais do que uma
-		vez a qualquer cargo. Crie uma visão que exiba estes dados incluindo nome, CPF e apelido, além do
-		número de candidaturas.
-		 Insira dados para que seu relatório tenha, pelo menos, duas tuplas
+/*
+  Ex. 2
+  a)  Crie um relatório (visão) com todos os candidatos que se candidataram mais do que uma vez a qualquer cargo. 
+      Crie uma visão que exiba estes dados incluindo nome, CPF e apelido, além do número de candidaturas.
+*/
+CREATE VIEW MaisDeUmaCandidatura (Nome, CPF, Apelido, NroCandidaturas)
+AS
+(SELECT Cand.Nome, Cand.CPF, Cand.Apelido, NroCandidaturas FROM Candidato Cand 
+JOIN 
+(SELECT NroCand AS Candidato , NroCandidaturas FROM (SELECT Candt.NroCand, COUNT(Candt.Ano) AS NroCandidaturas FROM CANDIDATURA Candt GROUP BY Candt.NroCand) WHERE NroCandidaturas > 1) 
+ON 
+Cand.NroCand=Candidato);
+
+/*
+  Ex.2
+  b)  Crie uma visão que exiba, para cada candidatura, os atributos do candidato e do cargo.
+      Escolha os atributos que julgar mais adequados.
+      Atributos escolhidos: 
+      Para o Candidato: CPF, Nome, Idade e Apelido do Candidato
+      Para o Cargo: Nome, Esfera, Cidade e Estado
+      
+      Esta visão é atualizável? Por quê?
+      Não. De acordo com a teoria lida no Slide, a junção de ambas as tabelas, com os atributos que escolhemos,
+      fez com que esta junção não fosse key-preserved. As chaves primárias de ambas tabelas que fazem parte
+      da View não estão contidas na View.
+      Caso tentemos dar update em atributos que vieram tanto da tabela Candidato, quanto da tabela Cargo obetmos 
+      os seguintes erros.
 */
 
-CREATE VIEW CANDIDATO_EXPERIENTE (nome, CPF, apelido, numCandidaturas) 
-AS 
-SELECT Cdto.Nome, Cdto.CPF, Cdto.Apelido FROM CANDIDATO Cdto JOIN CANDIDATURA Cnd ON Cdto.NroCand=Cnd.NroCand AND COUNT(Cnd.NroCand) > 1 GROUP BY Cdto.NroCand;
+CREATE VIEW DadosCandidatura (CPF, Nome, Idade, Apelido, Cargo, Esfera, Cidade, Estado) 
+AS(
+SELECT Cand.CPF, Cand.Nome, Cand.Idade, Cand.Apelido, Crg.NomeDescritivo, Crg.Esfera, Crg.NomeCidade, Crg.SiglaEstado
+FROM CANDIDATO Cand, CARGO Crg, CANDIDATURA Cdt WHERE Cand.Nome NOT IN ('Branco', 'Nulo') AND Cand.NroCand=Cdt.NroCand AND Cdt.CodCargo=Crg.CodCargo
+);
 
+UPDATE DadosCandidatura SET Apelido = 'Zeh' WHERE CPF = 1;
+UPDATE DadosCandidatura SET Cargo = 'Presidents' WHERE Cargo = 'Presidente';
 
-SELECT Cdto.Nome, Cdto.CPF, Cdto.Apelido FROM CANDIDATO Cdto, CANDIDATURA Cnd WHERE Cdto.NroCand=Cnd.NroCand AND;
+/*
+  Ex. 3
+    Considere uma visão materializada com os dados das sessões eleitorais e todos seus dados correlatos, 
+    incluindo zona, urna, bairro, cidade, estado, e correspondentes atributos.
+    Crie esta visão com a opção refresh fast.
+*/
+CREATE MATERIALIZED VIEW LOG ON LE06SESSAO WITH ROWID;
+CREATE MATERIALIZED VIEW LOG ON LE04BAIRRO WITH ROWID;
+CREATE MATERIALIZED VIEW DadosSessoes
+REFRESH FAST AS
+SELECT S.ROWID "Sessao_rid", B.ROWID "Bairro_rid",
+S.NroSessao, S.NroZona, S.NSerial as Urna, B.Nome, B.NomeCidade, B.SiglaEstado, B.CEP FROM SESSAO S, BAIRRO B WHERE S.NroZona=B.NroZona;
 
-SELECT Cdto.Nome, Cdto.CPF, Cdto.Apelido FROM CANDIDATO Cdto WHERE Cdto.NroCand In ;
-
-SELECT COUNT(Cnd.Ano) AS contagem, Cnd.NroCand FROM CANDIDATURA Cnd WHERE Cnd.contagem>=2 GROUP BY Cnd.NroCand ORDER BY Cnd.NroCand;
+DROP MATERIALIZED VIEW DadosSessoes;
+DROP MATERIALIZED VIEW LOG ON LE06SESSAO;
+DROP MATERIALIZED VIEW LOG ON LE04BAIRRO;
