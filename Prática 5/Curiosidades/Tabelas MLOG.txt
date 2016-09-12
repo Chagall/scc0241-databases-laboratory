@@ -1,0 +1,15 @@
+MLOG$ Table
+
+An MLOG$ table is the Snapshot Log table created against a base table. A row is inserted into the table each time a change (insert/update/delete) is made to the base table.
+
+When a snapshot is refreshed in fast (incremental) mode, it reads the rows in the MLOG$ table and uses this information to get the updated information from the base table into the snapshot for further processing.
+
+Standard RDBMS functionality manages rows inserted into the MLOG tables. When a snapshot is refreshed in either fast or complete mode, then the RDBMS will delete rows from the MLOG table. However, if multiple snapshots reference the same MLOG, then all the snapshots must be refreshed before the RDBMS can remove any rows from the MLOG table.
+
+The RDBMS creates snapshot logs on the base table and automatically names them using MLOG$_[20 characters of the table name]. For example:
+
+MRP_FORECAST_DATES (18 char) creates MLOG$_MRP_FORECAST_DATES BOM_DEPARTMENT_RESOURCES (24 char) creates MLOG$_BOM_DEPARTMENT_RESOU
+
+In case of a tie, the RDBMS adds a number to the MLOG name. For example:
+
+WSM_COPY_OP_RESOURCES creates MLOG$_WSM_COPY_OP_RESOURCE WSM_COPY_OP_RESOURCE_INSTANCES creates MLOG$_WSM_COPY_OP_RESOURCE1
