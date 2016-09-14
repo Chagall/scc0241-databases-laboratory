@@ -3,7 +3,7 @@
 
 Este repositório tem como finalizade armazenar os exercícios práticos da disciplina: 
 
-<b>SCC0241 - Laboratório de Bases de Dados<b>
+<b>SCC0241 - Laboratório de Bases de Dados</b>
 
 Ementa da disciplina: https://uspdigital.usp.br/jupiterweb/obterDisciplina?sgldis=SCC0241 (![alt text](http://www.dicasgerais.com/wp-content/uploads/2011/09/site-da-usp-64x64.gif "Logo USP"))
 
