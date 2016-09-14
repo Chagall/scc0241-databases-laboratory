@@ -1,9 +1,11 @@
 # SCC0241 - Databases Laboratory
 
 
-Este repositório tem como finalizade armazenar os exercícios práticos da disciplina: SCC0241 - Laboratório de Bases de Dados
+Este repositório tem como finalizade armazenar os exercícios práticos da disciplina: 
 
-Ementa da disciplina: https://uspdigital.usp.br/jupiterweb/obterDisciplina?sgldis=SCC0241
+<b>SCC0241 - Laboratório de Bases de Dados<b>
+
+Ementa da disciplina: https://uspdigital.usp.br/jupiterweb/obterDisciplina?sgldis=SCC0241 (![alt text](http://www.dicasgerais.com/wp-content/uploads/2011/09/site-da-usp-64x64.gif "Logo USP"))
 
 Base de dados Utilizada: https://pt.wikipedia.org/wiki/Oracle_(banco_de_dados) (![alt text](http://d2.alternativeto.net/dist/icons/oracle-database_75791.png?width=64&height=64&mode=crop&upscale=false "Logo Oracle DB"))
 
